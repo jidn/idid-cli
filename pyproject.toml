@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "idid"
+version = "0.1.0"
+description = "Record and select accomplishement from a TSV."
+requires-python = ">=3.7"
+readme="README.md"
+authors = [
+  { name = "Clinton James", email = "clinton-idid@jidn.com" },
+]
+
+[project.scripts]
+idid = "idid.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/jidn/idid"
+Documentation = "https://github.com/jidn/idid#readme"
+Issues = "https://github.com/jidn/idid/issues"
+Source = "https://github.com/jidn/idid"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra --doctest-modules -q"
+doctest_optionflags = "NORMALIZE_WHITESPACE IGNORE_EXCEPTION_DETAIL"
+testpaths = [
+    "src",
+    "tests",
+]
+
+[tool.coverage.run]
+branch = true
+parallel = false
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
