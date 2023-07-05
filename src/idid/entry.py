@@ -45,7 +45,6 @@ def round_timedelta(d: timedelta, nearest=60) -> timedelta:
     With nearest of 60 seconds, round to nearest minute.
 
     Examples:
-
         >>> round_timedelta(timedelta(seconds=89))
         datetime.timedelta(seconds=60)
         >>> round_timedelta(timedelta(seconds=90))
@@ -71,7 +70,6 @@ def h_mm(d: timedelta) -> str:
     """Stringify a timedelta rounded to the nearest minute.
 
     Examples:
-
         >>> h_mm(timedelta(seconds=45))
         '0:01'
         >>> h_mm(timedelta(seconds=5000))

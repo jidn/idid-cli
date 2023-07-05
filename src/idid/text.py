@@ -1,4 +1,10 @@
-from datetime import datetime, timedelta
+"""Create simple test reports.
+
+Use ReportDetail() to see each entries text description.
+Use ReportSummary() to group each day and show the total for the day.
+"""
+
+from datetime import datetime, timedelta  # datetime.datetime used in doctest
 from collections import defaultdict
 import textwrap
 from typing import List, Sequence, Tuple
@@ -14,17 +20,18 @@ def BeganEndedDuration(
     """Print sequence of entries.
 
     Args:
-        entries
+        entries: entries to use
         width: of the report output in characters
-        separator: tuple(str between fields, str before text)
+        separators: tuple(str between fields, str before text)
+        titles: field headers
 
     Example:
         Began  Ended  Hours  [Mon, Jan 1]
         -----  -----  -----
         08:01  10:11   2:10  Fixed #101038
+        10:11  11:57   1:46  Fixed #101039
 
     """
-
     output = []
     widths = [len(_) for _ in titles]
     title = separators[0].join(titles)
@@ -37,29 +44,24 @@ def BeganEndedDuration(
     # Space taken for up to the end of the hours
     fields_width = sum(widths) + (2 * len(separators[0]))
     widths.append(width - (fields_width + len(separators[1])))
-    output.extend(BeganEndedDurationEntries(entries, tuple(widths), separators))
+    output.extend(_BeganEndedDurationFormat(entries, tuple(widths), separators))
     return output, fields_width
 
 
-def test_entry() -> Entry:
-    e = Entry(datetime(2020, 1, 2, 8, 1), datetime(2020, 1, 2, 10, 11), "Fixed #101038")
-    return e
-
-
-def BeganEndedDurationEntries(
+def _BeganEndedDurationFormat(
     entries: Sequence[Entry], width: Sequence[int], separators: Sequence[str]
 ) -> List[str]:
     """Print a sequence of entries: begin, cease, duration, text.
 
     Args:
-      entries
+      entries: list of entries to report
       width: width of report
-      separator: the field separator
+      separators: tuple(str between fields, str before text)
 
-    >>> BeganEndedDurationEntries([test_entry()], (5,5,5,59), ('  ','  '))
+    >>> e = Entry(datetime(2020,1,2,8,1), datetime(2020,1,2,10,11), "Fixed #101038")
+    >>> _BeganEndedDurationFormat([e], (5,5,5,59), ('  ','  '))
     ['08:01  10:11   2:10  Fixed #101038']
     """
-
     output = []
     fields_width = sum(width[:-1]) + (len(separators[0] * (len(width) - 2)))
     text_width = width[-1]
@@ -77,11 +79,20 @@ def BeganEndedDurationEntries(
 def ReportDetail(
     entries: Sequence[Entry], width: int = 80, separators=("  ", "  ")
 ) -> List[str]:
-    """Daily report
+    """Daily report.
 
     Args:
-        entries: the datetime.
-        predicate: to eliminate some entries
+        entries: list of entries to report
+        width: width of report
+        separators: tuple(str between fields, str before text)
+
+    Example:
+        Began  Ended  Hours  [Mon, Jan 1]
+        -----  -----  -----
+        08:01  10:11   2:10  Fixed #101038
+        10:11  11:57   1:46  Fixed #101039
+        ============   3:46
+
     """
     if len(entries) == 0:
         return []
@@ -94,7 +105,10 @@ def ReportDetail(
 
 
 def ReportDaySummary(entries: Sequence[Entry]) -> List[str]:
-    """Daily summary
+    """Daily summary.
+
+    Args:
+        entries: list of entries to report
 
     Example:
         Wed, Jan 01    8:15

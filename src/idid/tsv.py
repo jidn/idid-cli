@@ -13,7 +13,7 @@ Entries = Sequence[Entry]
 
 
 def get_default_TSV() -> Path:
-    """Get a path to a TSV either from environment or .local/share"""
+    """Get a path to a TSV either from environment or .local/share."""
     return Path(os.getenv("ididTSV", "~/.local/share/idid/idid.tsv")).expanduser()
 
 
@@ -42,6 +42,11 @@ class DateRange:
         return (self.close - self.begin).days + 1
 
     def __contains__(self, timestamp: datetime) -> bool:
+        """Is the timestamp in the range of dates.
+
+        Args:
+            timestamp: the datetime in question.
+        """
         return self.begin <= timestamp.date() <= self.close
 
     def __repr__(self):
@@ -53,16 +58,21 @@ class DateRange:
           >>> DateRange(date(2020,1,1), date(2020,1,7))
           20Jan01Wed-20Jan07Tue
         """
-
         b = self.begin.strftime("%y%b%d%a")
         if self.begin == self.close:
             return b
         return f"{b}-{self.close.strftime('%y%b%d%a')}"
 
     def __len__(self):
+        """The number of days in this DateRange."""
         return self.days
 
     def __lt__(self, other):
+        """Does this DateRange begin another.
+
+        Args:
+            other: comparison DateRange
+        """
         return self.begin < other.begin
 
 
@@ -77,7 +87,6 @@ def reverse_readline(path: Path, buf_size: int = 8192):
         A single line from a TSV file.
 
     Example:
-
         last = reverse_readline("~/.local/share/idid-cli/idid.tsv")
     """
     with open(path) as fh:  # no cov
@@ -116,14 +125,13 @@ def get_entries(
     filters: Sequence[Callable[[str], bool]] = (lambda _: True,),
     source: Generator[str, None, None] = reverse_readline(get_default_TSV()),
 ) -> List[Entry]:
-    """Entries from source on date_range matching filters.
+    """Entries from source on `date_ranges` and `filters`.
 
     Args:
       date_ranges: a sequence of `DateRange`
-      filter: entry matching; default all
+      filters: Callable against Entry.text; default all
       source: tsv lines is descending cronological order
     """
-
     matching: List[Entry] = []
     ranges = list(date_ranges)
     if len(ranges) == 0:
@@ -171,6 +179,13 @@ def get_entries_from(
     date_ranges: Sequence[DateRange],
     filters: Sequence[Callable[[str], bool]] = (lambda _: True,),
 ) -> List[Entry]:
+    """Get Entries matching both `date_ranges` and `filters`.
+
+    Args:
+        path: the TSV file path
+        date_ranges: all date ranges of interest
+        filters: filters on Entry.text
+    """
     return get_entries(date_ranges, filters, reverse_readline(path))
 
 

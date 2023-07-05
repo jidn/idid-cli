@@ -1,5 +1,4 @@
-"""Process command line entry arguments.
-"""
+"""Process command line entry arguments."""
 import argparse
 import datetime
 import re
@@ -13,14 +12,14 @@ from idid.entry import Entry, h_mm
 
 
 def parse_time(text: str, relative: Optional[datetime.datetime]) -> datetime.datetime:
-    """Parse test to a datetime.timedelta
+    """Parse test to a datetime.timedelta.
 
     [minutes] in the past
-    [HH:MM] with optional "pm"
+    [HH:MM] with optional "am" or "pm"
 
     Args:
-        text - either [minutes] or [HH:MM]am|pm
-        relative - now
+        text: either [minutes] or [HH:MM]am|pm
+        relative: to what datetime should the text be parsed; default is now
 
     >>> parse_time('',datetime.datetime(2023,1,1,12,0,0))
     datetime.datetime(2023, 1, 1, 12, 0)

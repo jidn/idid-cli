@@ -196,7 +196,7 @@ def make_date_range(begin: str, through: str) -> DateRange:
 
 
 def get_last_dow(look_for: int, relative: int) -> int:
-    """Get the number of days before relative DOW
+    """Get the number of days before relative DOW.
 
     Args:
       look_for: DOW, 0=Monday, 6=Sunday; datetime.date.weekday()
@@ -213,7 +213,6 @@ def get_last_dow(look_for: int, relative: int) -> int:
       >>> get_last_dow(4, 2)  # Friday relative to Wednesday
       5
     """
-
     days = relative - look_for
     if days <= 0:
         days = 7 - look_for + relative
@@ -227,15 +226,18 @@ def parser_options(
     options: Optional[List[str]] = None, tsv=None
 ) -> List[Tuple[str, dict]]:
     """Get standard command-line options.
+
+    Args:
+        options: One or more of: -d, -r, -f, -x, -v, --tsv
+        tsv: path to the TSV file
+
+    Options:
         -d  number of DAYS earlier, DOW[n], or [YYYY]MM-DD"
         -r  from DATE through DAYS or DATE
         -f  find entries matching REGEX
         -x  exclude entries matching REGEX
         -v  verbose, multiple entries is more verbose
-        --tsv  IDid tab separated time file
-
-    Args:
-        options: One or more of: -d, -r, -f, -x, -v, --tsv
+        --tsv  IDid tab separated time file.
 
     Example:
         for name, attrib in parser_options():
@@ -336,8 +338,8 @@ def parse_filters(exclude: str, include: str) -> Tuple[Callable[[str], bool]]:
     With empty excludes and includes, accept everything.
 
     Args:
-      excludes: regex
-      includes: regex
+      exclude: regex
+      include: regex
 
     Examples:
       >>> all(_('+proj bad commit') for _ in parse_filters(None,None))
@@ -349,7 +351,6 @@ def parse_filters(exclude: str, include: str) -> Tuple[Callable[[str], bool]]:
       >>> [_('+proj bad commit') for _ in parse_filters('+proj', 'jidn')]
       [False, False]
     """
-
     checks = []
 
     # Return `found` when `pattern` is found
@@ -394,7 +395,6 @@ def parse_entry_args(
     Example:
         date_ranges, filters = parse_entry_args(parse.parse_args())
     """
-
     date_ranges = parse_date_ranges(args)
     if hasattr(args, "verbose") and args.verbose > 1:
         print(f"For date ranges: {', '.join(str(_) for _ in date_ranges)}")
@@ -406,8 +406,7 @@ def parse_entry_args(
 def get_entries_from_args(args: argparse.Namespace) -> Entries:
     """Get entries from argparse.Namespace.
 
-    Args
+    Args:
         args: ArgumentParser.parse_args() Namespace or None
     """
-
     return get_entries_from(args.tsv, *parse_entry_args(args))

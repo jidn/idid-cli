@@ -35,7 +35,7 @@ def days_ago(days_ago: int) -> date:
     ],
 )
 def test_cli_parse_date(text: str, expected: date):
-    """Date by interger 'days ago'"""
+    """Date by interger 'days ago'."""
     dates, preds = get_dates(text)
     assert len(dates) == 1
     assert len(preds) == 1  # The default predicate
